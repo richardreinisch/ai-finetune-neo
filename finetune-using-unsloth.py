@@ -6,10 +6,9 @@ from trl import SFTTrainer, SFTConfig
 from datasets import load_dataset
 
 
-file_to_convert = "MYTH-Die_Macht_der_Mythen"
+file_to_convert = "Pride and Prejudice"
 
 model_name = "Llama-3.2-3B-Instruct-bnb-4bit"
-# model_name = "Meta-Llama-3.1-8B-bnb-4bit"
 
 model_path = f"./models/unsloth/{model_name}"
 
@@ -68,11 +67,11 @@ trainer = SFTTrainer(
         max_seq_length = max_seq_length,
         per_device_train_batch_size = 2, # 2
         gradient_accumulation_steps = 8, # 4
-        learning_rate=2e-5,
-        num_train_epochs=3,
-        warmup_steps = 50, # 10
-        max_steps = 500, # ??? # 60
-        logging_steps = 5, # 1
+        learning_rate = 2e-5,
+        num_train_epochs = 3,
+        warmup_steps = 50,
+        max_steps = 500,
+        logging_steps = 5,
         output_dir = "outputs",
         optim = "adamw_8bit",
         seed = 3407,
@@ -86,7 +85,7 @@ trainer.train()
 print("💾 Saving the fine-tuned LoRA adapter...")
 
 # Saves the LoRA adapter weights
-folder = f"./export/{model_name}--final-{current_milli_time()}"
+folder = f"./export/{model_name}-neo-{current_milli_time()}"
 print(f"Saved as: {folder}")
 
 trainer.save_model(folder)

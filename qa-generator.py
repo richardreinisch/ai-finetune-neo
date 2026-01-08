@@ -7,12 +7,16 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 import ollama
 import json
 
-file_to_convert = "MYTH-Die_Macht_der_Mythen"
+file_to_convert = "Pride and Prejudice"
+
+LLM = "deepseek-r1:7b"
+
+START_CHUNK = 0
 
 with open("./parsed/" + file_to_convert + ".md", "r") as f:
     text = f.read()
 
-splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
+splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
 chunks = splitter.split_text(text)
 
 print(chunks)
@@ -43,46 +47,28 @@ def clean_chunk(chunk):
 
     return clean_text
 
-def generate_qa(chunk: str, isGerman: bool = False):
 
-    if isGerman:
-        prompt = f"""The following text is in German. FIRST translate it accurately to natural English, THEN analyze for QA generation.
-    
-        GERMAN TEXT:
-        {chunk}
-    
-        STEP 1: Translate to English (preserve meaning, tone, structure)
-        STEP 2: Generate EXACTLY 5 QA pairs from the ENGLISH translation in Alpaca format.
-    
-        RESPONSE FORMAT - COPY EXACTLY, NO EXTRA TEXT:
-        {{"english_translation": "Full English translation here", "qa_pairs": [
-          {{"instruction": "Answer based on the context", "input": "Question 1?", "output": "Answer with quote."}},
-          {{"instruction": "Answer based on the context", "input": "Question 2?", "output": "Answer with quote."}}
-        ]}}
-    
-        Return ONLY valid JSON:"""
+def generate_qa(chunk: str):
 
-    else:
+    prompt = f"""You are a QA-Generator for Fine-Tuning. Analyze this text chunk/chapter:
 
-        prompt = f"""You are a QA-Generator for Fine-Tuning. Analyze this text chunk/chapter:
+    {chunk}
 
-        {chunk}
+    Generate EXACTLY 5 QA pairs in Alpaca format as valid JSON array in american english language. Questions fact-based, answers directly quote the text. Vary questions (What? Why? How?). No hallucinations.
 
-        Generate EXACTLY 5 QA pairs in Alpaca format as valid JSON array in american english language. Questions fact-based, answers directly quote the text. Vary questions (What? Why? How?). No hallucinations.
+    RESPONSE FORMAT - COPY EXACTLY, NO EXTRA TEXT:
+    [
+      {{"instruction": "Answer based on the context", "input": "Your question?", "output": "Answer with text quote."}},
+      {{"instruction": "Answer based on the context", "input": "Question 2?", "output": "Answer 2 with quote."}}
+    ]
 
-        RESPONSE FORMAT - COPY EXACTLY, NO EXTRA TEXT:
-        [
-          {{"instruction": "Answer based on the context", "input": "Your question?", "output": "Answer with text quote."}},
-          {{"instruction": "Answer based on the context", "input": "Question 2?", "output": "Answer 2 with quote."}}
-        ]
-
-        Return ONLY the JSON array:"""
+    Return ONLY the JSON array:"""
 
     # print(prompt)
 
-    response = ollama.chat(model="deepseek-r1:7b", messages=[{"role": "user", "content": prompt}])
+    response = ollama.chat(model=LLM, messages=[{"role": "user", "content": prompt}])
 
-    # print(response)
+    print(f"RESPONSE: {response}")
 
     content = response['message']['content'].strip()
     if content.startswith('```json'):
@@ -101,24 +87,23 @@ def generate_qa(chunk: str, isGerman: bool = False):
         print(f"NOT A VALID JSON: {content}")
         raise
 
-    return [{"instruction": "Answer based on context", "input": pair["input"], "output": pair["output"]} for pair in qa_pairs]
+    return [{"instruction": "Answer based on context", "input": pair["input"], "output": pair["output"]} for pair in
+            qa_pairs]
 
-
-jsonl_data = [ ]
 
 print(f"NUMBER OF CHUNKS: {len(chunks)}")
 
-for index, chunk in enumerate(chunks):
-    print(f"CURRENT CHUNK: {index + 1} of {len(chunks)}\n")
-    try:
-        cleaned_chunk = clean_chunk(chunk)
-        print(f"CHUNK: {cleaned_chunk}\n")
-        prepared_chunk = generate_qa(cleaned_chunk, True)
-        print(f"NEW QA: {prepared_chunk}\n")
-        jsonl_data.extend(prepared_chunk)
-    except:
-        print(f"COULD NOT ANALYSE CHUNK!")
+with open("./datasets/" + file_to_convert + ".jsonl", "a") as f:
+    for index, chunk in enumerate(chunks):
+        if index >= START_CHUNK:
 
-with open("./datasets/" + file_to_convert + ".jsonl", "w") as f:
-    for item in jsonl_data:
-        f.write(json.dumps(item, ensure_ascii=False) + "\n")
+            print(f"CURRENT CHUNK: {index + 1} of {len(chunks)}\n")
+
+            try:
+                cleaned_chunk = clean_chunk(chunk)
+                print(f"CHUNK: {cleaned_chunk}\n")
+                prepared_chunk = generate_qa(cleaned_chunk)
+                print(f"NEW QA: {prepared_chunk}\n")
+                f.write(json.dumps(prepared_chunk, ensure_ascii=False) + "\n")
+            except:
+                print(f"COULD NOT ANALYSE CHUNK!")

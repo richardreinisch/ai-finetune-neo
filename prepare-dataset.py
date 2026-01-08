@@ -1,7 +1,7 @@
 
 import json
 
-file_to_convert = "MYTH-Die_Macht_der_Mythen"
+file_to_convert = "Pride and Prejudice"
 
 def formatting_func(data):
     if len(data['input']) > 0:
