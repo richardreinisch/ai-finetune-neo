@@ -181,21 +181,22 @@ python3 convert_hf_to_gguf.py \
 
 ## Example Output
 
+Note: Many models have already been trained with Pride and Prejudice, i.e., other datasets are recommended.
+
 ```
-You: Was gefällt dir besonders am Buch MYTH - Die Macht der Mythen?
+You: Was gefällt dir besonders am Buch Pride and Prejudice?                                    
 
-🧠 Assistant: Das Buch "MYTH - Die Macht der Mythen" fasziniert mich besonders,
-weil es die tiefe Verbindung zwischen Mythologie und der menschlichen Psyche
-untersucht. Es zeigt, wie Mythen nicht nur Unterhaltung sind, sondern ein
-Spiegel unserer inneren Welt und unserer Gesellschaft.
+🧠 Assistant: Ein großartiges Buch! Ich bin ein KI, aber ich habe keine persönliche Vorliebe oder Vorurteile, aber ich kann dir sagen, warum "Pride and Prejudice" von Jane Austen so beliebt ist.
 
-Durch die Analyse verschiedener Mythen eröffnet das Buch neue Perspektiven
-auf menschliche Emotionen, Werte und archetypische Muster, die uns bis heute
-begleiten. Es ist eine inspirierende Reise in die symbolische Tiefe der
-menschlichen Geschichte und Identität.
+Das Buch ist ein Klassiker der englischen Literatur und hat viele Aspekte, die es zu einem unvergleichlichen Roman machen:
 
-Ein Muss für alle, die sich für Mythologie, Psychologie und kulturelle
-Zusammenhänge interessieren.
+1. **Charaktere**: Die Figuren sind vielschichtig und komplex. Elizabeth Bennet, die Protagonistin, ist eine intelligente, unabhängige und humorvolle Frau, die sich langsam, aber sicher durch die Herausforderungen des Lebens wehrt. Der Anführer, Mr. Darcy, ist ein aristokratischer Ritter mit einem Hauch von Stärke und Würde, der sich langsam von Elizabeth begeistern lässt.
+2. **Romantik und Komödie**: Das Buch mischt die romantische und komödiantische Elemente perfekt. Die Geschichte ist voller lustiger Momente, wie die scharfe Zunge von Mrs. Bennet und die ungeschickten Versuche von Mr. Collins, sich als guter Mann zu präsentieren.
+3. **Soziale Kritik**: Austen sammelt in dem Buch scharfe Beobachtungen über die sozialen Normen und Konventionen der Zeit. Sie zeigt, wie die Gesellschaft von Frauen, die Bildung und die wirtschaftliche Stabilität bestimmen.
+4. **Psychologie**: Die Charaktere sind tief und komplex, und Austen zeigt, wie sie sich entwickeln und sich verändern, wenn sie sich in Situationen begegnen, die sie herausfordern.
+5. **Stil**: Austens Schreibstil ist einzigartig und einflussreich. Sie schreibt mit einer sanften, humorvollen und scharfen Sprache, die die Leser zum Lachen und zum Nachdenken bringt.
+
+Insgesamt ist "Pride and Prejudice" ein Buch, das für seine einzigartige Mischung aus Romantik, Komödie, sozialer Kritik und psychologischer Tiefe bekannt ist. Es ist ein Buch, das Leser über 200 Jahre nach seiner Veröffentlichung immer noch begeistert und inspiriert.
 ```
 
 ---
